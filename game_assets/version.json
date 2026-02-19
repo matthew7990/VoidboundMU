@@ -1,9 +1,15 @@
 {
-    "version":  "0.99h",
-    "changelog":  "Full Re-Sync",
+    "version":  "1.0.1",
+    "changelog":  "Official 1.0.1 Fix",
     "serverIp":  "181.97.243.64",
     "serverPort":  "44406",
     "files":  [
+                  {
+                      "path":  "MuVoid\\background.png",
+                      "sha256":  "67DE21663EF18D06884016FF63EAE847E4A216FDD3A45B44743A55AE94D1C67B",
+                      "size":  297457,
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/background.png"
+                  },
                   {
                       "path":  "MuVoid\\config.ini",
                       "sha256":  "8809B050C952EEF07DB73E91CEAE9995043EDCD69DFEEB3A19346D1AAF56BBFF",
@@ -33,6 +39,24 @@
                       "sha256":  "E2A68E1ADF42057B4D37ED3AAB17DBBA64D6ECAE163C217B73D34C53B5D3A9F5",
                       "size":  2676736,
                       "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/MUnique.Client.Library.dll"
+                  },
+                  {
+                      "path":  "MuVoid\\MuVoidLauncher.dll",
+                      "sha256":  "21670106E3F07060D50D40C40B91C014FDF72ED8FC3AFA7F59237ACA3FCFC0BE",
+                      "size":  31744,
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/MuVoidLauncher.dll"
+                  },
+                  {
+                      "path":  "MuVoid\\MuVoidLauncher.exe",
+                      "sha256":  "02DF77EEE6A07DB5AF9445939E7C473251237CB26E9AB39D4D77140892936596",
+                      "size":  162304,
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/MuVoidLauncher.exe"
+                  },
+                  {
+                      "path":  "MuVoid\\MuVoidLauncher.runtimeconfig.json",
+                      "sha256":  "96BC2946DFF8790400D652EC7F8DE7BB043E954980D59470C112788B68A1FBD3",
+                      "size":  519,
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/MuVoidLauncher.runtimeconfig.json"
                   },
                   {
                       "path":  "MuVoid\\ogg.dll",
