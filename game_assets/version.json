@@ -1,8 +1,8 @@
 {
-  "version": "1.0.4",
-  "changelog": "Fix launcher freeze al verificar archivos. Mejoras de performance.",
+  "version": "1.0.5",
+  "changelog": "Fix conexion: puerto correcto del Connect Server (44405). Fix freeze del launcher.",
   "serverIp": "181.97.243.64",
-  "serverPort": "44406",
+  "serverPort": "44405",
   "files": [
     {
       "path": "MuVoid\\background.png",
@@ -12,7 +12,7 @@
     },
     {
       "path": "MuVoid\\config.ini",
-      "sha256": "8809B050C952EEF07DB73E91CEAE9995043EDCD69DFEEB3A19346D1AAF56BBFF",
+      "sha256": "CF7F5F83A74187AEA6571D9D36B476D56BE87E2F8F8EC9350328231867623844",
       "size": 352,
       "url": "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/config.ini"
     },
@@ -42,7 +42,7 @@
     },
     {
       "path": "MuVoid\\MuVoidLauncher.dll",
-      "sha256": "956628A7607EAD1C9D1E09D28799981BAC94E2C373C106613F232DC56DC64B92",
+      "sha256": "96514ED74BD327BD37FF201964ACBF81CCE0CCD85F692A46BD6C21C1C5F0290A",
       "size": 34304,
       "url": "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/MuVoidLauncher.dll"
     },
