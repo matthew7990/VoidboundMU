@@ -3,13 +3,14 @@ setlocal enabledelayedexpansion
 
 :: ============================================================
 ::  VoidBound Release Publisher
-::  Empaqueta el cliente y publica un GitHub Release
-::  para que el Launcher descargue las actualizaciones.
+::  - Empaqueta los archivos del juego y los sube como assets
+::    individuales al GitHub Release (para updates incrementales)
+::  - El ZIP de distribucion SOLO contiene el Launcher (~5MB)
+::  - El Launcher descarga el juego completo al primer inicio
 ::
 ::  REQUISITOS:
 ::    - GitHub CLI (gh): https://cli.github.com/
 ::    - Logueado con: gh auth login
-::    - El repo GITHUB_REPO debe ser TUYO (no MUnique/OpenMU)
 ::
 ::  USO:
 ::    release_client.bat 0.99b "Descripcion del cambio"
@@ -17,15 +18,14 @@ setlocal enabledelayedexpansion
 
 :: ── Configuracion ─────────────────────────────────────────────
 set "GITHUB_REPO=matthew7990/VoidboundMU"
-:: ^^^^^^^^^^^^^^ CAMBIA ESTO al usuario/repo de tu GitHub propio
+set "SERVER_IP=181.97.243.64"
+set "SERVER_PORT=44406"
 
 set "ROOT=%~dp0"
 set "CLIENT_BIN=%ROOT%clients\MuMain\src\bin"
 set "LAUNCHER_BIN=%ROOT%clients\Launcher\bin\Release\net10.0-windows"
-set "OUTPUT_DIR=%ROOT%dist_release"
-set "GAME_DIR=%OUTPUT_DIR%\MuVoid"
-set "SERVER_IP=181.97.243.64"
-set "SERVER_PORT=44406"
+set "STAGE_DIR=%ROOT%dist_release"
+set "GAME_DIR=%STAGE_DIR%\MuVoid"
 
 :: ── Argumentos ────────────────────────────────────────────────
 set "VERSION=%~1"
@@ -34,215 +34,206 @@ set "CHANGELOG=%~2"
 if "%VERSION%"=="" (
     echo.
     echo [ERROR] Debes indicar la version.
-    echo.
     echo   Uso: release_client.bat 0.99b "Descripcion del cambio"
     echo.
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
 if "%CHANGELOG%"=="" set "CHANGELOG=New version %VERSION%"
+
+set "TAG=v%VERSION%"
+set "LAUNCHER_ZIP=%ROOT%VoidboundMU_Launcher_%VERSION%.zip"
+set "MANIFEST=%STAGE_DIR%\version.json"
+set "BASE_URL=https://github.com/%GITHUB_REPO%/releases/download/%TAG%"
 
 echo.
 echo ============================================================
 echo   VoidBound Release Publisher  ^|  v%VERSION%
 echo ============================================================
-echo   Repo  : %GITHUB_REPO%
-echo   Tag   : v%VERSION%
-echo   Notes : %CHANGELOG%
+echo   Repo    : %GITHUB_REPO%
+echo   Tag     : %TAG%
+echo   Notas   : %CHANGELOG%
+echo   Server  : %SERVER_IP%:%SERVER_PORT%
 echo ============================================================
 echo.
 
 :: ── Verificar gh CLI ──────────────────────────────────────────
-where gh >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [ERROR] GitHub CLI ^(gh^) no encontrado.
-    echo         Instala desde: https://cli.github.com/
-    echo         Luego corre:   gh auth login
-    pause
-    exit /b 1
+where gh >nul 2>&1 || (
+    echo [ERROR] GitHub CLI no encontrado. Instala: https://cli.github.com/
+    pause & exit /b 1
+)
+gh auth status >nul 2>&1 || (
+    echo [ERROR] No autenticado. Corre: gh auth login
+    pause & exit /b 1
 )
 
-gh auth status >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [ERROR] No estas autenticado con GitHub CLI.
-    echo         Corre: gh auth login
-    pause
-    exit /b 1
-)
-
-:: ── Verificar ejecutables del cliente ─────────────────────────
-echo [1/6] Verificando ejecutables del cliente...
+:: ── [1/5] Verificar Main.exe ──────────────────────────────────
+echo [1/5] Verificando ejecutables del cliente...
 if not exist "%CLIENT_BIN%\Main.exe" (
-    echo [ERROR] Main.exe no encontrado en:
-    echo         %CLIENT_BIN%\Main.exe
-    echo.
-    echo Asegurate de que compile_mumain.bat haya terminado exitosamente.
-    pause
-    exit /b 1
+    echo [ERROR] Main.exe no encontrado en %CLIENT_BIN%
+    echo         Compila primero con compile_mumain.bat
+    pause & exit /b 1
 )
+echo       OK: Main.exe encontrado.
 
-:: ── Compilar Launcher si es necesario ─────────────────────────
-echo [2/6] Compilando Launcher...
+:: ── [2/5] Compilar Launcher ───────────────────────────────────
+echo [2/5] Compilando Launcher...
 cd /d "%ROOT%clients\Launcher"
 dotnet build -c Release >nul 2>&1
 if not exist "%LAUNCHER_BIN%\MuVoidLauncher.exe" (
     echo [ERROR] No se pudo compilar el Launcher.
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
 cd /d "%ROOT%"
+echo       OK: MuVoidLauncher.exe compilado.
 
-:: ── Armar estructura de archivos de release ───────────────────
-echo [3/6] Preparando archivos...
-if exist "%OUTPUT_DIR%" rmdir /s /q "%OUTPUT_DIR%"
+:: ── [3/5] Staging de archivos ─────────────────────────────────
+echo [3/5] Preparando archivos del juego...
+if exist "%STAGE_DIR%" rmdir /s /q "%STAGE_DIR%"
 mkdir "%GAME_DIR%"
-mkdir "%GAME_DIR%\Data"
 
-:: Ejecutables del juego
-copy /y "%CLIENT_BIN%\Main.exe"                   "%GAME_DIR%\Main.exe"              >nul
-copy /y "%CLIENT_BIN%\MUnique.Client.Library.dll" "%GAME_DIR%\"                      >nul
-copy /y "%CLIENT_BIN%\glew32.dll"                 "%GAME_DIR%\"                      >nul
-copy /y "%CLIENT_BIN%\ogg.dll"                    "%GAME_DIR%\"                      >nul
-copy /y "%CLIENT_BIN%\vorbisfile.dll"             "%GAME_DIR%\"                      >nul
-copy /y "%CLIENT_BIN%\wzAudio.dll"                "%GAME_DIR%\"                      >nul
+:: Ejecutables y DLLs del juego
+copy /y "%CLIENT_BIN%\Main.exe"                   "%GAME_DIR%\" >nul
+copy /y "%CLIENT_BIN%\MUnique.Client.Library.dll" "%GAME_DIR%\" >nul
+copy /y "%CLIENT_BIN%\glew32.dll"                 "%GAME_DIR%\" >nul
+copy /y "%CLIENT_BIN%\ogg.dll"                    "%GAME_DIR%\" >nul
+copy /y "%CLIENT_BIN%\vorbisfile.dll"             "%GAME_DIR%\" >nul
+copy /y "%CLIENT_BIN%\wzAudio.dll"                "%GAME_DIR%\" >nul
 
-:: Assets del juego
+:: Assets (Data + Translations)
 xcopy /e /i /q /y "%CLIENT_BIN%\Data"         "%GAME_DIR%\Data"         >nul
 xcopy /e /i /q /y "%CLIENT_BIN%\Translations" "%GAME_DIR%\Translations" >nul
 
-:: config.ini (el launcher NO sobreescribe este — se genera una vez para nuevas instalaciones)
-(
-    echo [LOGIN]
-    echo Version=1.03.34
-    echo TestVersion=1.03.34
-    echo RememberMe=0
-    echo Language=Eng
-    echo EncryptedUsername=
-    echo EncryptedPassword=
-    echo [PARTITION]
-    echo Version=357
-    echo [Window]
-    echo Width=1024
-    echo Height=768
-    echo Windowed=1
-    echo [Graphics]
-    echo ColorDepth=0
-    echo RenderTextType=0
-    echo [Audio]
-    echo SoundEnabled=0
-    echo MusicEnabled=0
-    echo VolumeLevel=0
-    echo [CONNECTION SETTINGS]
-    echo ServerIP=%SERVER_IP%
-    echo ServerPort=%SERVER_PORT%
-) > "%GAME_DIR%\config.ini"
+:: config.ini — gestionado por PatchConfigIni del launcher
+:: NO va en la lista de files del manifest (el launcher lo crea/parchea solo)
+echo       OK: %GAME_DIR% armado.
 
-:: Launcher
-copy /y "%LAUNCHER_BIN%\MuVoidLauncher.exe"            "%OUTPUT_DIR%\MuVoidLauncher.exe"            >nul
-copy /y "%LAUNCHER_BIN%\MuVoidLauncher.dll"            "%OUTPUT_DIR%\MuVoidLauncher.dll"            >nul
-copy /y "%LAUNCHER_BIN%\MuVoidLauncher.runtimeconfig.json" "%OUTPUT_DIR%\"                          >nul
-
-:: ── Generar version.json con SHA256 de cada archivo ──────────
-echo [4/6] Calculando hashes y generando version.json...
-
-set "MANIFEST=%OUTPUT_DIR%\version.json"
-set "TAG=v%VERSION%"
-set "BASE_URL=https://github.com/%GITHUB_REPO%/releases/download/%TAG%"
-
-:: Recolectar todos los archivos del release en un array
-:: Los paths son relativos a OUTPUT_DIR (que es lo que va junto al launcher)
+:: ── [4/5] Generar version.json ────────────────────────────────
+echo [4/5] Calculando SHA256 y generando version.json...
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-"$root = '%OUTPUT_DIR%'; ^
-$baseUrl = '%BASE_URL%'; ^
-$version = '%VERSION%'; ^
-$changelog = '%CHANGELOG%'; ^
-$serverIp = '%SERVER_IP%'; ^
+"$gameDir   = '%GAME_DIR%'; ^
+$baseUrl    = '%BASE_URL%'; ^
+$version    = '%VERSION%'; ^
+$changelog  = '%CHANGELOG%'; ^
+$serverIp   = '%SERVER_IP%'; ^
 $serverPort = '%SERVER_PORT%'; ^
 $files = @(); ^
-Get-ChildItem -Recurse -File $root | Where-Object { $_.Name -ne 'version.json' } | ForEach-Object { ^
-    $rel = $_.FullName.Substring($root.Length + 1).Replace('/', '\'); ^
-    $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash; ^
-    $size = $_.Length; ^
-    $urlName = $rel.Replace('\', '/'); ^
-    $files += [PSCustomObject]@{ path=$rel; sha256=$hash; size=$size; url=\"$baseUrl/$urlName\" } ^
+Get-ChildItem -Recurse -File $gameDir | ForEach-Object { ^
+    $rel     = 'MuVoid\' + $_.FullName.Substring($gameDir.Length + 1); ^
+    $hash    = (Get-FileHash $_.FullName -Algorithm SHA256).Hash; ^
+    $size    = $_.Length; ^
+    $urlSlug = $rel.Replace('\','/'); ^
+    $files  += [PSCustomObject]@{ path=$rel; sha256=$hash; size=$size; url=\"$baseUrl/$urlSlug\" } ^
 }; ^
-$manifest = [PSCustomObject]@{ version=$version; changelog=$changelog; serverIp=$serverIp; serverPort=$serverPort; files=$files }; ^
+$manifest = [PSCustomObject]@{ ^
+    version=$version; changelog=$changelog; ^
+    serverIp=$serverIp; serverPort=$serverPort; files=$files ^
+}; ^
 $manifest | ConvertTo-Json -Depth 5 | Set-Content -Encoding UTF8 '%MANIFEST%'; ^
-Write-Host \"version.json generado con\" $files.Count \"archivos. IP=$serverIp Port=$serverPort\""
+Write-Host ('       OK: version.json con ' + $files.Count + ' archivos. IP=' + $serverIp)"
 
 if not exist "%MANIFEST%" (
-    echo [ERROR] No se pudo generar version.json
-    pause
-    exit /b 1
+    echo [ERROR] Fallo al generar version.json.
+    pause & exit /b 1
 )
 
-:: ── Crear ZIP del cliente completo (para instalacion inicial) ─
-echo [5/6] Creando ZIP del cliente completo...
-set "ZIP_PATH=%ROOT%VoidboundMU_Client_%VERSION%.zip"
-if exist "%ZIP_PATH%" del /f /q "%ZIP_PATH%"
+:: ── [5/5] ZIP del Launcher (solo, sin juego) ──────────────────
+echo [5/5] Creando ZIP del Launcher para distribucion inicial...
 
+:: Carpeta temporal solo con el launcher
+set "LAUNCHER_STAGE=%STAGE_DIR%\launcher_only"
+mkdir "%LAUNCHER_STAGE%"
+copy /y "%LAUNCHER_BIN%\MuVoidLauncher.exe"                "%LAUNCHER_STAGE%\" >nul
+copy /y "%LAUNCHER_BIN%\MuVoidLauncher.dll"                "%LAUNCHER_STAGE%\" >nul
+copy /y "%LAUNCHER_BIN%\MuVoidLauncher.runtimeconfig.json" "%LAUNCHER_STAGE%\" >nul
+
+:: README para los jugadores dentro del ZIP
+(
+    echo ============================
+    echo     VoidboundMU Launcher
+    echo ============================
+    echo.
+    echo REQUISITO:
+    echo   .NET 10 Desktop Runtime
+    echo   https://dotnet.microsoft.com/en-us/download/dotnet/10.0
+    echo.
+    echo COMO JUGAR:
+    echo   1. Ejecutar MuVoidLauncher.exe
+    echo   2. Esperar que descargue los archivos del juego ^(solo primera vez^)
+    echo   3. Presionar PLAY
+    echo.
+    echo Si el launcher no abre: instalar .NET 10 Runtime
+) > "%LAUNCHER_STAGE%\LEEME.txt"
+
+if exist "%LAUNCHER_ZIP%" del /f /q "%LAUNCHER_ZIP%"
 powershell -NoProfile -Command ^
-    "Compress-Archive -Path '%OUTPUT_DIR%\*' -DestinationPath '%ZIP_PATH%' -Force"
+    "Compress-Archive -Path '%LAUNCHER_STAGE%\*' -DestinationPath '%LAUNCHER_ZIP%' -Force"
 
-:: ── Publicar GitHub Release ───────────────────────────────────
-echo [6/6] Publicando GitHub Release %TAG%...
+echo.
+echo ── Publicando en GitHub Releases ────────────────────────────
 echo.
 
-:: Crear el release y subir todos los archivos de la carpeta dist_release
-:: version.json va primero (el launcher lo busca por nombre)
+:: Crear el release con version.json + launcher + ZIP del launcher
 gh release create "%TAG%" ^
     --repo "%GITHUB_REPO%" ^
     --title "VoidboundMU %VERSION%" ^
     --notes "%CHANGELOG%" ^
     "%MANIFEST%#version.json" ^
-    "%OUTPUT_DIR%\MuVoidLauncher.exe#MuVoidLauncher.exe" ^
-    "%OUTPUT_DIR%\MuVoidLauncher.dll#MuVoidLauncher.dll" ^
-    "%OUTPUT_DIR%\MuVoidLauncher.runtimeconfig.json#MuVoidLauncher.runtimeconfig.json" ^
-    "%ZIP_PATH%#VoidboundMU_Client_%VERSION%.zip"
+    "%LAUNCHER_ZIP%#VoidboundMU_Launcher_%VERSION%.zip"
 
-:: Subir los archivos del juego individualmente (para updates parciales)
-echo.
-echo Subiendo archivos del juego para actualizaciones parciales...
-
-for %%F in ("%GAME_DIR%\*.exe" "%GAME_DIR%\*.dll" "%GAME_DIR%\*.ini") do (
-    echo   Subiendo %%~nxF...
-    gh release upload "%TAG%" "%%F#MuVoid/%%~nxF" --repo "%GITHUB_REPO%" --clobber
+if %errorlevel% neq 0 (
+    echo [ERROR] Fallo al crear el release.
+    pause & exit /b 1
 )
 
-:: Subir Data/ como subcarpetas (assets)
+:: Subir los archivos del juego como assets individuales
+:: (para que el launcher pueda ir descargando solo lo que cambio)
+echo.
+echo Subiendo archivos del juego ^(esto puede tardar segun el tamano de Data/^)...
+echo.
+
+set "UPLOAD_ERRORS=0"
+
+for %%F in ("%GAME_DIR%\*.exe" "%GAME_DIR%\*.dll") do (
+    echo   [EXE/DLL] %%~nxF
+    gh release upload "%TAG%" "%%F#MuVoid/%%~nxF" --repo "%GITHUB_REPO%" --clobber
+    if errorlevel 1 set /a UPLOAD_ERRORS+=1
+)
+
 for /r "%GAME_DIR%\Data" %%F in (*) do (
     set "REL=%%F"
     set "REL=!REL:%GAME_DIR%\=!"
-    echo   Subiendo !REL!...
+    echo   [Data] !REL!
     gh release upload "%TAG%" "%%F#MuVoid/!REL!" --repo "%GITHUB_REPO%" --clobber
+    if errorlevel 1 set /a UPLOAD_ERRORS+=1
 )
 
-:: Translations
 if exist "%GAME_DIR%\Translations" (
     for /r "%GAME_DIR%\Translations" %%F in (*) do (
         set "REL=%%F"
         set "REL=!REL:%GAME_DIR%\=!"
-        echo   Subiendo !REL!...
+        echo   [Translations] !REL!
         gh release upload "%TAG%" "%%F#MuVoid/!REL!" --repo "%GITHUB_REPO%" --clobber
+        if errorlevel 1 set /a UPLOAD_ERRORS+=1
     )
 )
 
-if %errorlevel% equ 0 (
-    echo.
+echo.
+if "%UPLOAD_ERRORS%"=="0" (
     echo ============================================================
-    echo  [OK] Release publicado exitosamente!
+    echo  [OK] Release publicado!
     echo.
-    echo  Tag     : %TAG%
-    echo  Repo    : https://github.com/%GITHUB_REPO%
     echo  Release : https://github.com/%GITHUB_REPO%/releases/tag/%TAG%
     echo.
-    echo  Proximos pasos:
-    echo    1. Compartir VoidboundMU_Client_%VERSION%.zip para instalacion inicial
-    echo    2. El Launcher descargara actualizaciones automaticamente desde ahora
+    echo  Pasos para los jugadores:
+    echo    1. Descargar VoidboundMU_Launcher_%VERSION%.zip  (~5MB^)
+    echo    2. Descomprimir y ejecutar MuVoidLauncher.exe
+    echo    3. El launcher descarga el juego automaticamente al primer inicio
+    echo    4. PLAY
     echo ============================================================
 ) else (
-    echo [ERROR] Fallo al publicar el Release.
+    echo [WARN] Release creado pero %UPLOAD_ERRORS% archivo(s) fallaron al subir.
+    echo        Reintenta con: release_client.bat %VERSION% "%CHANGELOG%"
 )
 
 echo.
