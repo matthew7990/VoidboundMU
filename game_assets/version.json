@@ -1,6 +1,6 @@
 {
-    "version":  "0.99f",
-    "changelog":  "Fix URL Path",
+    "version":  "0.99g",
+    "changelog":  "Fix vorbis/ogg dlls",
     "serverIp":  "181.97.243.64",
     "serverPort":  "44406",
     "files":  [
@@ -27,6 +27,18 @@
                       "sha256":  "02DF77EEE6A07DB5AF9445939E7C473251237CB26E9AB39D4D77140892936596",
                       "size":  162304,
                       "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/MuVoidLauncher.exe"
+                  },
+                  {
+                      "path":  "MuVoid\\ogg.dll",
+                      "sha256":  "E6A3DEEEBE9DE112A9A0C0C456A15E7F6CBAE0AF5D859932BDC5FF1AD9CFA60E",
+                      "size":  53248,
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/ogg.dll"
+                  },
+                  {
+                      "path":  "MuVoid\\vorbisfile.dll",
+                      "sha256":  "525D5849837C0451EDC855172917B94A1B48010C781BA48F620EFB9F5E597055",
+                      "size":  999424,
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/vorbisfile.dll"
                   },
                   {
                       "path":  "MuVoid\\wzAudio.dll",
