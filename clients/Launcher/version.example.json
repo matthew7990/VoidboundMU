@@ -1,0 +1,20 @@
+{
+  "version": "0.99b",
+  "changelog": "Initial public release - classic gameplay with modern infrastructure.",
+  "serverIp": "181.97.243.64",
+  "serverPort": "44406",
+  "files": [
+    {
+      "path": "MuVoid\\Main.exe",
+      "sha256": "A1B2C3D4E5F6...",
+      "size": 12345678,
+      "url": "https://github.com/TU_USUARIO/VoidboundMU/releases/download/v0.99b/MuVoid/Main.exe"
+    },
+    {
+      "path": "MuVoid\\MUnique.Client.Library.dll",
+      "sha256": "B2C3D4E5F6A1...",
+      "size": 3456789,
+      "url": "https://github.com/TU_USUARIO/VoidboundMU/releases/download/v0.99b/MuVoid/MUnique.Client.Library.dll"
+    }
+  ]
+}
