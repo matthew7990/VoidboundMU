@@ -5,110 +5,146 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MuVoidLauncher"
         mc:Ignorable="d"
-        Title="MuVoid Launcher" Height="450" Width="800"
+        Title="MuVoid Launcher" Height="500" Width="850"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterScreen" MouseLeftButtonDown="Window_MouseLeftButtonDown">
     
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0" CornerRadius="15" GlassFrameThickness="0" ResizeBorderThickness="5"/>
+        <WindowChrome CaptionHeight="0" CornerRadius="10" GlassFrameThickness="0" ResizeBorderThickness="5"/>
     </WindowChrome.WindowChrome>
 
     <Grid>
-        <!-- Main Background with Rounded Corners -->
-        <Border CornerRadius="15" ClipToBounds="True">
+        <!-- Layout Principal -->
+        <Border CornerRadius="10" ClipToBounds="True">
             <Grid>
-                <!-- Background Image Layer (Placeholder for now with gradient) -->
+                <!-- CAPA 1: Fondo Oscuro Base -->
+                <Rectangle Fill="#0A0A0A"/>
+                
+                <!-- CAPA 2: Imagen/Gradiente de Fondo -->
+                <!-- Puedes cambiar esto por un <Image Source="background.jpg" Stretch="UniformToFill"/> -->
                 <Rectangle x:Name="BackgroundRect">
                     <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#1a1c2c" Offset="0"/>
-                            <GradientStop Color="#0f0f1a" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-
-                <!-- Cinematic Overlay -->
-                <Rectangle Opacity="0.4">
-                    <Rectangle.Fill>
-                        <RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.5,0.5" RadiusX="1" RadiusY="1">
-                            <GradientStop Color="Transparent" Offset="0.5"/>
-                            <GradientStop Color="Black" Offset="1.5"/>
+                        <RadialGradientBrush Center="0.5,0.3" GradientOrigin="0.5,0.3" RadiusX="0.8" RadiusY="0.8">
+                            <GradientStop Color="#201030" Offset="0"/>
+                            <GradientStop Color="#050505" Offset="1"/>
                         </RadialGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>
+                
+                <!-- CAPA 3: Particulas (Simuladas con manchas de luz) -->
+                <Canvas>
+                    <Ellipse Width="300" Height="300" Fill="#2A0055" Opacity="0.1" Canvas.Left="-50" Canvas.Top="-50">
+                        <Ellipse.Effect><BlurEffect Radius="80"/></Ellipse.Effect>
+                    </Ellipse>
+                    <Ellipse Width="200" Height="200" Fill="#5500aa" Opacity="0.08" Canvas.Right="-20" Canvas.Bottom="-20">
+                        <Ellipse.Effect><BlurEffect Radius="60"/></Ellipse.Effect>
+                    </Ellipse>
+                </Canvas>
 
-                <!-- UI Content Area -->
+                <!-- CAPA 4: Contenido UI -->
                 <Grid Margin="30">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Header -->
-                        <RowDefinition Height="*"/>    <!-- Center/News info -->
-                        <RowDefinition Height="Auto"/> <!-- Bottom/Progress -->
+                        <RowDefinition Height="Auto"/> <!-- Top Bar -->
+                        <RowDefinition Height="*"/>    <!-- Center Area -->
+                        <RowDefinition Height="Auto"/> <!-- Bottom/Action Area -->
                     </Grid.RowDefinitions>
 
-                    <!-- Header -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
-                        <TextBlock Text="MU" Foreground="White" FontSize="36" FontWeight="Bold" FontFamily="Segoe UI Black"/>
-                        <TextBlock Text="VOID" Foreground="#8a2be2" FontSize="36" FontWeight="Bold" FontFamily="Segoe UI Black">
-                            <TextBlock.Effect>
-                                <DropShadowEffect BlurRadius="15" Color="#8a2be2" Opacity="0.6" ShadowDepth="0"/>
-                            </TextBlock.Effect>
-                        </TextBlock>
-                    </StackPanel>
-
-                    <!-- Control Buttons (Custom Minimize/Close) -->
-                    <StackPanel Grid.Row="0" HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top">
-                        <Button Content="−" Background="Transparent" Foreground="Gray" BorderThickness="0" Width="30" Height="30" FontSize="20" Click="Minimize_Click" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"/>
-                        <Button Content="✕" Background="Transparent" Foreground="Gray" BorderThickness="0" Width="30" Height="30" FontSize="16" Click="Close_Click" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"/>
-                    </StackPanel>
-
-                    <!-- News/Status Box (Glassmorphism Effect) -->
-                    <Border Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="300" Height="150" 
-                            Background="#1AFFFFFF" CornerRadius="10" BorderBrush="#33FFFFFF" BorderThickness="1">
-                        <StackPanel Margin="15">
-                            <TextBlock x:Name="VersionText" Text="VERSION 0.99b" Foreground="#AAFFFFFF" FontSize="12" FontWeight="SemiBold"/>
-                            <TextBlock Text="Voidbound Update" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,5,0,0"/>
-                            <TextBlock x:Name="ChangelogText" Text="Classic gameplay with modern infrastructure. Prepare for the battlefield." 
-                                       Foreground="#CCFFFFFF" FontSize="12" TextWrapping="Wrap" Margin="0,10,0,0"/>
+                    <!-- TOP: Logo & Window Controls & Server Status -->
+                    <Grid Grid.Row="0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="VOID" Foreground="White" FontSize="28" FontWeight="ExtraBold" FontFamily="Segoe UI">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="10" Color="White" Opacity="0.3" Direction="0"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="BOUND" Foreground="#9D46FF" FontSize="28" FontWeight="ExtraBold" FontFamily="Segoe UI">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="15" Color="#9D46FF" Opacity="0.6" Direction="0"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
                         </StackPanel>
-                    </Border>
 
-                    <!-- Bottom Section -->
-                    <StackPanel Grid.Row="2" Margin="0,20,0,0">
-                        <Grid>
-                            <TextBlock x:Name="StatusLabel" Text="Checking for updates..." Foreground="#AAFFFFFF" FontSize="14" HorizontalAlignment="Left"/>
-                            <TextBlock x:Name="ProgressLabel" Text="0%" Foreground="#AAFFFFFF" FontSize="14" HorizontalAlignment="Right"/>
+                        <!-- Panel Derecho: Server Status y Controles -->
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top">
+                            
+                            <!-- Server Status Indicator -->
+                            <Border x:Name="ServerStatusPanel" Background="#11FFFFFF" CornerRadius="15" Padding="12,5" Margin="0,0,20,0" VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="Gray" Margin="0,1,8,0">
+                                        <Ellipse.Effect>
+                                            <DropShadowEffect x:Name="StatusGlow" BlurRadius="5" Color="Gray" ShadowDepth="0" Opacity="0.8"/>
+                                        </Ellipse.Effect>
+                                    </Ellipse>
+                                    <TextBlock x:Name="ServerStatusText" Text="CHECKING..." Foreground="#AAFFFFFF" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Button Content="−" Background="Transparent" Foreground="#88FFFFFF" BorderThickness="0" Width="30" Height="30" FontSize="18" Click="Minimize_Click" Cursor="Hand"/>
+                            <Button Content="✕" Background="Transparent" Foreground="#88FFFFFF" BorderThickness="0" Width="30" Height="30" FontSize="14" Click="Close_Click" Cursor="Hand"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- CENTER: Info Panel (Glassmorphism) -->
+                    <Grid Grid.Row="1" VerticalAlignment="Center">
+                        <Border HorizontalAlignment="Left" Width="350" Padding="25" Background="#10FFFFFF" CornerRadius="12" BorderBrush="#20FFFFFF" BorderThickness="1">
+                             <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.4" ShadowDepth="5"/>
+                            </Border.Effect>
+                            <StackPanel>
+                                <TextBlock x:Name="VersionText" Text="VERSION 0.99b" Foreground="#66FFFFFF" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="UPDATE READY" Foreground="White" FontSize="22" FontWeight="Bold" Margin="0,5,0,10"/>
+                                <Rectangle Height="1" Fill="#20FFFFFF" Margin="0,0,0,10"/>
+                                <TextBlock x:Name="ChangelogText" Text="Welcome to Voidbound MU. Initializing client..." 
+                                           Foreground="#CCFFFFFF" FontSize="13" TextWrapping="Wrap" LineHeight="20"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- BOTTOM: Progress & Play -->
+                    <StackPanel Grid.Row="2" Margin="0,20,0,5">
+                        
+                        <!-- Status Messages -->
+                        <Grid Margin="0,0,0,8">
+                            <TextBlock x:Name="StatusLabel" Text="Initializing..." Foreground="#AAFFFFFF" FontSize="13" HorizontalAlignment="Left"/>
+                            <TextBlock x:Name="ProgressLabel" Text="0%" Foreground="#AAFFFFFF" FontSize="13" HorizontalAlignment="Right" FontWeight="Bold"/>
                         </Grid>
                         
-                        <!-- Progress Bar -->
-                        <Grid Height="8" Margin="0,5,0,20">
-                            <Rectangle Fill="#22FFFFFF" RadiusX="4" RadiusY="4"/>
-                            <Rectangle x:Name="ProgressBarFill" Fill="#8a2be2" Width="0" HorizontalAlignment="Left" RadiusX="4" RadiusY="4">
+                        <!-- Progress Bar Container -->
+                        <Grid Height="6">
+                            <Rectangle Fill="#1AFFFFFF" RadiusX="3" RadiusY="3"/>
+                            <Rectangle x:Name="ProgressBarFill" Fill="#9D46FF" Width="0" HorizontalAlignment="Left" RadiusX="3" RadiusY="3">
                                 <Rectangle.Effect>
-                                    <DropShadowEffect BlurRadius="10" Color="#8a2be2" Opacity="0.5" ShadowDepth="0"/>
+                                    <DropShadowEffect BlurRadius="8" Color="#9D46FF" Opacity="0.6" ShadowDepth="0"/>
                                 </Rectangle.Effect>
                             </Rectangle>
                         </Grid>
 
-                        <!-- Main Action Button -->
-                        <Button x:Name="PlayButton" Content="PLAY" Height="50" Width="200" HorizontalAlignment="Right" 
-                                FontSize="20" FontWeight="Bold" Cursor="Hand" Click="PlayButton_Click" IsEnabled="False">
+                        <!-- Play Button (Large and Prominent) -->
+                        <Button x:Name="PlayButton" Content="PLAY" Height="55" Width="220" HorizontalAlignment="Right" Margin="0,25,0,0"
+                                FontSize="20" FontWeight="Bold" Cursor="Hand" Click="PlayButton_Click" IsEnabled="False"
+                                BorderThickness="0">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </Button.Resources>
                             <Button.Style>
                                 <Style TargetType="Button">
-                                    <Setter Property="Background" Value="#8a2be2"/>
+                                    <Setter Property="Background" Value="#9D46FF"/>
                                     <Setter Property="Foreground" Value="White"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
-                                                <Border Background="{TemplateBinding Background}" CornerRadius="25">
+                                                <Border x:Name="border" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
                                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#a142ff"/>
+                                                        <Setter Property="Background" Value="#B26EFF"/>
                                                     </Trigger>
                                                     <Trigger Property="IsEnabled" Value="False">
-                                                        <Setter Property="Background" Value="#33FFFFFF"/>
-                                                        <Setter Property="Foreground" Value="#55FFFFFF"/>
+                                                        <Setter Property="Background" Value="#1AFFFFFF"/>
+                                                        <Setter Property="Foreground" Value="#40FFFFFF"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -116,9 +152,11 @@
                                     </Setter>
                                 </Style>
                             </Button.Style>
+                            <Button.Effect>
+                                <DropShadowEffect BlurRadius="15" Color="#9D46FF" Opacity="0.4" ShadowDepth="2" Direction="270"/>
+                            </Button.Effect>
                         </Button>
                     </StackPanel>
-
                 </Grid>
             </Grid>
         </Border>
