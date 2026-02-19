@@ -1,6 +1,6 @@
 {
-    "version":  "0.99e",
-    "changelog":  "Git Raw Update",
+    "version":  "0.99f",
+    "changelog":  "Forced Upload Binaries",
     "serverIp":  "181.97.243.64",
     "serverPort":  "44406",
     "files":  [
@@ -23733,12 +23733,6 @@
                       "sha256":  "955E59C3BC8EEECC3BAFAC7B4407644D6401C0B521E16BE72BB95973D22CC52A",
                       "size":  88140,
                       "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/Data/NPC/npc_devin01.OZJ"
-                  },
-                  {
-                      "path":  "Data\\NPC\\npc_devin02.OZT",
-                      "sha256":  "20FE513452ED5C343491CB77DDE0EFB177A54F192DE9C0E49EEC9901D3E3F937",
-                      "size":  16432,
-                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/Data/NPC/npc_devin02.OZT"
                   },
                   {
                       "path":  "Data\\NPC\\NPC_dopleganger_body.OZJ",
