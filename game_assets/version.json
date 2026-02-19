@@ -1,38 +1,38 @@
 {
     "version":  "0.99f",
-    "changelog":  "Fix",
+    "changelog":  "Fix URL Path",
     "serverIp":  "181.97.243.64",
     "serverPort":  "44406",
     "files":  [
                   {
-                      "path":  "hub\\Voidbound2\\_publish\\game_assets\\MuVoid\\glew32.dll",
+                      "path":  "MuVoid\\glew32.dll",
                       "sha256":  "A0822F6B1272689BE78221A1B19054007C3F500DC584648A314301E8095D4284",
                       "size":  424960,
-                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/hub/Voidbound2/_publish/game_assets/MuVoid/glew32.dll"
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/glew32.dll"
                   },
                   {
-                      "path":  "hub\\Voidbound2\\_publish\\game_assets\\MuVoid\\Main.exe",
+                      "path":  "MuVoid\\Main.exe",
                       "sha256":  "81CDDEC3C7BE884D28ED56A50CDBE0596EDCC21E6412DB6F619F566996881789",
                       "size":  5696512,
-                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/hub/Voidbound2/_publish/game_assets/MuVoid/Main.exe"
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/Main.exe"
                   },
                   {
-                      "path":  "hub\\Voidbound2\\_publish\\game_assets\\MuVoid\\MUnique.Client.Library.dll",
+                      "path":  "MuVoid\\MUnique.Client.Library.dll",
                       "sha256":  "E2A68E1ADF42057B4D37ED3AAB17DBBA64D6ECAE163C217B73D34C53B5D3A9F5",
                       "size":  2676736,
-                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/hub/Voidbound2/_publish/game_assets/MuVoid/MUnique.Client.Library.dll"
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/MUnique.Client.Library.dll"
                   },
                   {
-                      "path":  "hub\\Voidbound2\\_publish\\game_assets\\MuVoid\\MuVoidLauncher.exe",
+                      "path":  "MuVoid\\MuVoidLauncher.exe",
                       "sha256":  "02DF77EEE6A07DB5AF9445939E7C473251237CB26E9AB39D4D77140892936596",
                       "size":  162304,
-                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/hub/Voidbound2/_publish/game_assets/MuVoid/MuVoidLauncher.exe"
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/MuVoidLauncher.exe"
                   },
                   {
-                      "path":  "hub\\Voidbound2\\_publish\\game_assets\\MuVoid\\wzAudio.dll",
+                      "path":  "MuVoid\\wzAudio.dll",
                       "sha256":  "4E103AF4265081890EA8958B209B90416629C3CA50A7397F90F4DF0781ACB0DB",
                       "size":  212992,
-                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/hub/Voidbound2/_publish/game_assets/MuVoid/wzAudio.dll"
+                      "url":  "https://raw.githubusercontent.com/matthew7990/VoidboundMU/main/game_assets/MuVoid/wzAudio.dll"
                   }
               ]
 }
