@@ -1,6 +1,6 @@
 {
-    "version":  "1.0.1",
-    "changelog":  "Official 1.0.1 Fix",
+    "version":  "1.0.3",
+    "changelog":  "Fix UI Freeze \u0026 Optimize Check",
     "serverIp":  "181.97.243.64",
     "serverPort":  "44406",
     "files":  [
